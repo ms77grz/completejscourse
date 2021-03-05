@@ -75,15 +75,15 @@ btnRoll.addEventListener('click', () => {
 })
 
 btnHold.addEventListener('click', () => {
+  // IF GAME ISN'T OVER AND CURRENT SCORE ISN'T 0
   if (playing && currentScore != 0) {
     // 1. ADD CURRENT SCORE TO ACTIVE PLAYER'S SCORE
     scores[activePlayer] += currentScore
     // DISPLAYING THE TOTAL SCORE
     document.getElementById(`score--${activePlayer}`).textContent =
       scores[activePlayer]
-    // RESETING THE CURRENT SCORE
     // 2. CHECK IF PLAYER'S SCORE IS >= 100
-    if (scores[activePlayer] >= 20) {
+    if (scores[activePlayer] >= 100) {
       // FINISH THE GAME
       diceEl.classList.add('hidden')
       playing = false
@@ -100,12 +100,4 @@ btnHold.addEventListener('click', () => {
   }
 })
 
-btnNew.addEventListener('click', () => {
-  // RESETING INITIAL VALUES TO DEFAULTS
-  init()
-  //   scores[0] = 0
-  //   scores[1] = 0
-  //   playing = true
-  //   diceEl.classList.add('hidden')
-  //   activePlayer = 0
-})
+btnNew.addEventListener('click', init)
