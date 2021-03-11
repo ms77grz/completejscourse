@@ -27,7 +27,9 @@ const restaurant = {
     );
   },
   orederPasta: function (ing1, ing2, ing3) {
-    console.log();
+    console.log(
+      `Here is your delicious pasta with ${ing1}, ${ing2} and ${ing3}`
+    );
   },
 
   openingHours: {
@@ -275,3 +277,21 @@ console.log([...'hello', ' ', 'S.']);
 
 console.log(...'hello');
 console.log('h', 'e', 'l', 'l', 'o');
+
+const ingredients = ['1', '2', '3'];
+restaurant.orederPasta(...ingredients);
+
+const anOrder = function (ing1, ing2, ing3) {
+  console.log(`Here is your order with: ${ing1}, ${ing2} and ${ing3}`);
+};
+
+anOrder(...ingredients);
+
+// OBJECTS
+const newRestaurant = { foundedIn: 1998, ...restaurant, founder: 'Guiseppe' };
+console.log(newRestaurant);
+
+const restaurantCopy = { ...restaurant };
+restaurantCopy.name = 'Restaurant Roma';
+console.log(restaurantCopy.name);
+console.log(restaurant.name);
