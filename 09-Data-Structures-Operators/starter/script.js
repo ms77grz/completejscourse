@@ -31,6 +31,9 @@ const restaurant = {
       `Here is your delicious pasta with ${ing1}, ${ing2} and ${ing3}`
     );
   },
+  orderPizza: function (mainIngredient, ...restIngredients) {
+    console.log(mainIngredient, restIngredients);
+  },
 
   openingHours: {
     thu: {
@@ -248,6 +251,7 @@ console.log(title, date, firstName, personalTag, writingTag);
 
 console.log([...'hello']);
  */
+/* 
 // THE SPREAD OPERATOR (...)
 const arr = [7, 8, 9];
 const badNewArr = [1, 2, 3, arr[0], arr[1], arr[2]];
@@ -287,7 +291,7 @@ const anOrder = function (ing1, ing2, ing3) {
 
 anOrder(...ingredients);
 
-// OBJECTS
+// COPY OBJECTS
 const newRestaurant = { foundedIn: 1998, ...restaurant, founder: 'Guiseppe' };
 console.log(newRestaurant);
 
@@ -295,3 +299,78 @@ const restaurantCopy = { ...restaurant };
 restaurantCopy.name = 'Restaurant Roma';
 console.log(restaurantCopy.name);
 console.log(restaurant.name);
+ */
+/* 
+// REST PATTERN & PARAMETERS
+// DESTRUCTURING
+// RECAP SPREAD OPERATOR (RIGHT SIDE OF =)
+const arr = [1, 2, 3, ...[4, 5, 6]];
+console.log(arr); // [ 1, 2, 3, 4, 5, 6 ]
+// REST (LEFT SIDE OF =)
+const [a, b, ...rest] = arr;
+console.log(a, b, rest); // 1 2 [ 3, 4, 5, 6 ]
+
+const [pizza, , risotto, ...restFood] = [
+  ...restaurant.mainMenu,
+  ...restaurant.starterMenu,
+];
+console.log(pizza, risotto, restFood);
+// REST WITH OBJECTS
+const { sat, ...weekdays } = restaurant.openingHours;
+console.log(sat, weekdays);
+
+// FUNCTIONS
+const add = function (...nums) {
+  // console.log(nums);
+  // let sum = 0;
+  // for (let i = 0; i < nums.length; i++) sum += nums[i];
+  // return sum;
+  return nums.reduce((acc, val) => acc + val);
+};
+console.log(add(2, 3));
+console.log(add(5, 3, 7, 2));
+
+const x = [23, 5, 7];
+console.log(add(...x));
+
+restaurant.orderPizza('mashrooms', 'onion', 'olives', 'spinach');
+restaurant.orderPizza('mashrooms');
+ */
+/* 
+// SHORT-CIRCUITING
+// USE ANY DATA TYPE, RETURN ANY DATA TYPE
+// OR OPERATOR
+// IF THE FIRST VALUE IS TRUTHY VALUE IT WILL IMMEDIATELY RETURN THAT FIRST VALUE
+// THE OTHER OPERAND WILL NOT EVEN BE EVALUATED
+console.log('---- OR ----');
+console.log(3 || 'Jonas'); // 3
+console.log('', 'Jonas'); // Jonas
+console.log(true || 0); // true
+console.log(undefined || null); // null
+console.log(undefined || 0 || '' || 'Hello' || 23 || null); // Hello
+
+// restaurant.numGuests = 23;
+const guests1 = restaurant.numGuests ? restaurant.numGuests : 10;
+console.log(guests1); // 10
+const guests2 = restaurant.numGuests || 10;
+console.log(guests2); // 10
+// AND OPERATOR
+// IF THE FIRST VALUE IS FALSY VALUE IT WILL IMMEDIATELY RETURN THAT FIRST VALUE
+// THE OTHER OPERAND WILL NOT EVEN BE EVALUATED
+console.log('---- AND ----');
+console.log(0 && 'Jonas'); // 0
+console.log(7 && 'Jonas'); // Jonas
+console.log('Hello' && 23 && null && 'Jonas'); // null
+// PRACTICAL EXAMPLE
+if (restaurant.orderPizza) {
+  restaurant.orderPizza('mushrooms', 'spinach');
+}
+restaurant.orderPizza && restaurant.orderPizza('mushrooms', 'spinach');
+ */
+// THE NULLISH COALESCING OPERATOR (??)
+restaurant.numGuests = 0;
+const guests = restaurant.numGuests || 10;
+console.log(guests);
+// NULLISH: NULL AND UNDEFINED (NOT 0 OR '')
+const guestsCorrect = restaurant.numGuests ?? 10;
+console.log(guestsCorrect);
