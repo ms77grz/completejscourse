@@ -5,50 +5,52 @@ const flights =
   '_Delayed_Departure;fao93766109;txl2133758440;11:25+_Arrival;bru0943384722;fao93766109;11:45+_Delayed_Arrival;hel7439299980;fao93766109;12:05+_Departure;fao93766109;lis2323639855;12:30';
 
 // Data needed for first part of the section
+const weekdays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+
+const openingHours = {
+  [weekdays[3]]: {
+    open: 12,
+    close: 22,
+  },
+  [weekdays[4]]: {
+    open: 11,
+    close: 23,
+  },
+  sat: {
+    open: 0, // Open 24 hours
+    close: 24,
+  },
+};
+
 const restaurant = {
   name: 'Classico Italiano',
   location: 'Via Angelo Tavanti 23, Firenze, Italy',
   categories: ['Italian', 'Pizzeria', 'Vegetarian', 'Organic'],
   starterMenu: ['Focaccia', 'Bruschetta', 'Garlic Bread', 'Caprese Salad'],
   mainMenu: ['Pizza', 'Pasta', 'Risotto'],
-
-  order: function (starterIndex, mainIndex) {
+  // WRITING METHODS ES6
+  order(starterIndex, mainIndex) {
     return [this.starterMenu[starterIndex], this.mainMenu[mainIndex]];
   },
 
-  orderDelivery: function ({
-    starterIndex = 1,
-    mainIndex = 0,
-    time = '20:00',
-    address,
-  }) {
+  orderDelivery({ starterIndex = 1, mainIndex = 0, time = '20:00', address }) {
     console.log(
       `Order received! ${this.starterMenu[starterIndex]} and ${this.mainMenu[mainIndex]} will be delivered to ${address} at ${time}`
     );
   },
-  orederPasta: function (ing1, ing2, ing3) {
+  orederPasta(ing1, ing2, ing3) {
     console.log(
       `Here is your delicious pasta with ${ing1}, ${ing2} and ${ing3}`
     );
   },
-  orderPizza: function (mainIngredient, ...restIngredients) {
+  orderPizza(mainIngredient, ...restIngredients) {
     console.log(mainIngredient, restIngredients);
   },
 
-  openingHours: {
-    thu: {
-      open: 12,
-      close: 22,
-    },
-    fri: {
-      open: 11,
-      close: 23,
-    },
-    sat: {
-      open: 0, // Open 24 hours
-      close: 24,
-    },
-  },
+  // OPENING HOURS
+  // openingHours: openingHours,
+  // ES6 ENHANCED OBJECT LITERALS
+  openingHours,
 };
 
 /* 
@@ -479,4 +481,180 @@ for (const [index, item] of menu.entries())
 
 console.log(...menu.entries());
  */
+/* 
 // ENHANCED OBJECT LITERALS
+console.log(restaurant.openingHours);
+
+const assortment = ['Books', 'Magazines', 'Electronics Kits', 'Robots'];
+const shop = {
+  name: 'Webmshop',
+  location: 'Grozny, Russia',
+  assortment,
+  orderDelivery({ order, address, time }) {
+    console.log(
+      `Your order: ${order} will be delivered to ${address} at ${time}`
+    );
+  },
+};
+console.log(shop.assortment);
+// WRITING METHODS
+restaurant.orderPizza('cheese', 'mashrooms');
+const order = {
+  order: 'How to get an IT job',
+  address: 'Moscow, Russia',
+  time: '15:30',
+};
+shop.orderDelivery(order);
+console.log(restaurant.openingHours.sat);
+console.log(restaurant.openingHours['sat']);
+console.log(restaurant.openingHours['day-6']);
+
+const alerts = [
+  'primary',
+  'secondary',
+  'success',
+  'danger',
+  'warning',
+  'info',
+  'light',
+  'dark',
+];
+
+const elementProps = {
+  [`alert-${alerts[0]}`]: {
+    // primary
+    color: '#004085',
+    backgroundColor: '#cce5ff',
+    borderColor: '#b8daff',
+  },
+  [`alert-${alerts[1]}`]: {
+    // secondary
+    color: '#383d41',
+    backgroundColor: '#e2e4e5',
+    borderColor: '#d6d8db',
+  },
+  [`alert-${alerts[2]}`]: {
+    // success
+    color: '#155724',
+    backgroundColor: '#d4edda',
+    borderColor: '#c3e6cb',
+  },
+  [`alert-${alerts[3]}`]: {
+    // danger
+    color: '#721c24',
+    backgroundColor: '#f8d7da',
+    borderColor: '#f5c6cb',
+  },
+  [`alert-${alerts[4]}`]: {
+    // warning
+    color: '#856404',
+    backgroundColor: '#fff3cd',
+    borderColor: '#ffeeba',
+  },
+  [`alert-${alerts[5]}`]: {
+    // info
+    color: '#0c5460',
+    backgroundColor: '#d1ecf1',
+    borderColor: '#bee5eb',
+  },
+  [`alert-${alerts[6]}`]: {
+    // light
+    color: '#818182',
+    backgroundColor: '#fefefe',
+    borderColor: '#fdfdfe',
+  },
+  [`alert-${alerts[7]}`]: {
+    // dark
+    color: '#1b1e21',
+    backgroundColor: '#d6d8d9',
+    borderColor: '#c6c8ca',
+  },
+};
+console.log(elementProps);
+console.log(elementProps['alert-primary']);
+ */
+/* 
+// OPTIONAL CHAINING (?.)
+// console.log(restaurant.openingHours.mon); // undefined
+// console.log(restaurant.openingHours.mon.open); // TypeError: Cannot read property 'open' of undefined
+if (restaurant.openingHours.mon) console.log(restaurant.openingHours.mon.open);
+if (restaurant.openingHours.sat) console.log(restaurant.openingHours.thu.open); // { open: 0, close: 24 }
+
+if (restaurant.openingHours && restaurant.openingHours.mon)
+  console.log(restaurant.openingHours.mon);
+
+console.log(restaurant.openingHours.mon?.open); // undefined
+console.log(restaurant.openingHours.thu?.open); // 12
+
+console.log(restaurant.openingHours?.mon?.open); // undefined
+console.log(restaurant.openingHours?.thu?.open); // 12
+
+const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+for (const day of days) {
+  // const open = restaurant.openingHours[day]?.open || 'closed'; // IF OPEN VALUE IS 0 IT WILL BE CLOSED
+  const open = restaurant.openingHours[day]?.open ?? 'closed';
+  console.log(
+    `On ${day}, ${open === 'closed' ? 'we are closed' : `we open at ${open}`}`
+  );
+}
+
+// CALLING METHODS
+console.log(restaurant.order?.(0, 1) ?? 'Method does not exist!');
+console.log(restaurant.orderRisotto?.(0, 1) ?? 'Method does not exist!');
+
+// CHECKING ARRAYS
+const users = [
+  {
+    name: 'Jonas',
+    email: 'jonas@example.com',
+  },
+  {
+    name: 'Mark',
+    email: 'mark@example.com',
+  },
+];
+
+// const users = [];
+
+// IF CHECK
+if (users.length > 0) console.log(users[0]?.name);
+else console.log('Users array is empty'); // Jonas
+// USING OPTIONAL CHAINING
+console.log(users[0]?.name ?? 'Users array is empty'); // Jonas
+ */
+/* 
+// LOOPING OBJECTS: OBJECT KEYS, VALUES, AND ENTRIES
+// OBJECT.KEYS()
+// PROPERTY NAMES
+const properties = Object.keys(openingHours);
+console.log(properties);
+
+let openOn = `We are open on ${properties.length} days: `;
+for (const day of properties) {
+  openOn += `${day ? `${day}, ` : `.`}`;
+}
+console.log(openOn);
+
+let message = `We are open on ${properties.length} days: `;
+Object.entries(openingHours).map(([key, value], index, array) => {
+  message += `${array.length - 1 === index ? `${key}.` : `${key}, `}`;
+});
+console.log(message);
+
+// OBJECT.VALUES()
+const values = Object.values(openingHours);
+console.log(values);
+
+// OBJECT.ENTRIES()
+const entries = Object.entries(openingHours);
+console.log(entries);
+
+for (const entry of entries) {
+  console.log(entry);
+}
+// [key, value]
+for (const [day, { open, close }] of entries) {
+  console.log(`On ${day} we open at ${open} and close at ${close}`);
+}
+ */
+// CHALLENGE #2
