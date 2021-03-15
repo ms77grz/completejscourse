@@ -977,5 +977,187 @@ for (const [time, event] of gameEvents) {
   console.log(`[${half} HALF] ${time}: ${event}`);
 }
  */
-
+/* 
 // WORKING WITH STRINGS - PART 1
+const airline = 'TAP Air Portugal';
+const plane = 'A320';
+
+console.log(plane[0]); // A
+console.log(plane[1]); // 3
+console.log(plane[2]); // 2
+console.log('B737'[0]); // B
+
+console.log(airline.length); // 16
+console.log('B737'.length); // 4
+
+// METHODS
+console.log(airline.indexOf('r')); //6
+console.log(airline.lastIndexOf('r')); // 10
+console.log(airline.indexOf('Portugal')); // 8
+console.log(airline.indexOf('portugal')); // -1
+
+// SUBSTRING EXTRACTION WITH SLICE FROM THE ORIGINAL STRING
+// DOESN'T CHANGE ORIGINAL STRING AND JUST RETURNS A NEW STRING
+console.log(airline.slice(4)); // Air Portugal
+console.log(airline.slice(4, 7)); // Air
+
+// EXTRACTING THE FIRST AND THE LAST WORDS FROM A STRING
+console.log(airline.slice(0, airline.indexOf(' '))); // TAP
+console.log(airline.slice(airline.lastIndexOf(' ') + 1)); // Portugal
+
+// SLICING WITH NEGATIVE INDEXES
+console.log(airline.slice(-2)); // al
+console.log(airline.slice(1, -1)); // AP Air Portuga
+
+// const checkMiddleSeat = function (seat) {
+//   // B and E are middle seats
+//   if (seat.indexOf('B') !== -1 || seat.indexOf('E') !== -1)
+//     console.log(`It's a middle seat!`);
+//   else {
+//     console.log(`It's not a middle seat!`);
+//   }
+// };
+
+// const checkMiddleSeat = function (seat) {
+//   const middleSeat =
+//     seat.indexOf('B') !== -1 || seat.indexOf('E') !== -1
+//       ? 'the middle 😬 seat'
+//       : 'lucky 😎';
+//   console.log(`You got ${middleSeat}`);
+// };
+// TEACHER'S EXAMPLE
+const checkMiddleSeat = function (seat) {
+  // B and E are middle seats
+  const s = seat.slice(-1);
+  if (s === 'B' || s === 'E') console.log('You got the middle seat 😬');
+  else console.log('You got lucky 😎');
+};
+
+checkMiddleSeat('11B'); // You got the middle seat 😬
+checkMiddleSeat('23C'); // You got lucky 😎
+checkMiddleSeat('3E'); // You got the middle seat 😬
+
+// WHENEVER WE CALL A METHOD ON A STRING JAVASCRIPT CONVERTS IT TO AN OBJECT
+console.log(new String('Jonas')); // [String: 'Jonas']
+console.log(typeof new String('Jonas')); // object
+console.log(typeof new String('Jonas').slice(1)); // string
+ */
+/* 
+// WORKING WITH STRINGS - PART 2
+const airline = 'TAP Air Portugal';
+
+console.log(airline.toLowerCase()); // tap air portugal
+console.log(airline.toUpperCase()); // TAP AIR PORTUGAL
+console.log('Jonas'.toUpperCase()); // JONAS
+
+// FIX CAPITALIZATION IN NAME
+const passenger = 'jOnAS';
+const passengerLower = passenger.toLowerCase();
+const passengerCorrect =
+  passengerLower[0].toUpperCase() + passengerLower.slice(1);
+console.log(passengerCorrect); // Jonas
+
+// COMPARING EMAILS (and TRIMMING)
+const email = 'jonas@example.com';
+const loginEmail = '  Jonas@Example.Com \n';
+const normalizedEmail = loginEmail.trim().toLowerCase();
+console.log(normalizedEmail); // jonas@example.com
+console.log(email === normalizedEmail); // true
+
+// REPLACING DOESN'T CHANGE ORIGINAL STRING AND JUST RETURNS A NEW STRING
+const priceGB = '288,97£';
+const priceUS = priceGB.replace('£', '$').replace(',', '.');
+console.log(priceUS); // 288.97$
+
+const announcement =
+  'All passengers come to boarding door 23. Boarding door 23!';
+console.log(announcement.replace('door', 'gate')); // All passengers come to boarding gate 23. Boarding door 23!
+
+// REPLACEALL
+console.log(announcement.replaceAll('door', 'gate')); // All passengers come to boarding gate 23. Boarding gate 23!
+
+// REPLACE ALL OCCURANCES WITH REGEX
+console.log(announcement.replace(/door/g, 'gate')); // All passengers come to boarding gate 23. Boarding gate 23!
+
+// BOOLEANS
+const plane = 'Airbus A320neo';
+console.log(plane.includes('A320')); // true
+console.log(plane.includes('Boeing')); // false
+console.log(plane.startsWith('Airb')); // true
+
+const isNew =
+  plane.startsWith('Airbus') &&
+  plane.endsWith('neo') &&
+  'Part of the NEW Airbus family';
+// console.log('Part of the NEW Airbus family');
+console.log(isNew); // Part of the NEW Airbus family
+
+// PRACTICE EXERCISE
+const checkBaggage = function (items) {
+  const baggage = items.toLowerCase();
+  baggage.includes('gun') || baggage.includes('knife')
+    ? console.log('You are NOT allowed on board!')
+    : console.log('Welcome aboard!');
+};
+
+checkBaggage('I have a Laptop, some Food and a pocket Knife'); // You are NOT allowed on board!
+checkBaggage('Socks and camera'); // Welcome aboard!
+checkBaggage('Got some snacks and a gun for protections'); // You are NOT allowed on board!
+ */
+// WORKING WITH STRINGS - PART 3
+/* 
+// SPLIT
+console.log('a+very+nice+string'.split('+')); // [ 'a', 'very', 'nice', 'string' ]
+console.log('Jonas Schmedtmann'.split(' ')); // [ 'Jonas', 'Schmedtmann' ]
+
+const [firstName, lastName] = 'Jonas Schmedtmann'.split(' ');
+console.log(firstName, lastName); // Jonas Schmedtmann
+
+// JOIN
+const newName = ['Mr.', firstName, lastName.toUpperCase()].join(' ');
+console.log(newName); // Mr. Jonas SCHMEDTMANN
+
+// PRACTICE EXERCISE
+const capitalizeName = function (name) {
+  const names = name.split(' ');
+  const namesUpper = [];
+  for (const n of names) {
+    // WITH SLICE
+    // namesUpper.push(n[0].toUpperCase() + n.slice(1));
+    // WITH REPLACE
+    namesUpper.push(n.replace(n[0], n[0].toUpperCase()));
+  }
+  console.log(namesUpper.join(' '));
+};
+
+capitalizeName('jessica ann smith davis'); // Jessica Ann Smith Davis
+capitalizeName('jonas schmedtmann'); // Jonas Schmedtmann
+
+// PADDING
+const message = 'Go to gate 23';
+console.log(message.padStart(20, '+').padEnd(30, '+')); // +++++++Go to gate 23++++++++++
+console.log('Jonas'.padStart(20, '+').padEnd(30, '+')); // +++++++++++++++Jonas++++++++++
+
+// PRACTICE EXERCISE
+const maskCreditCard = function (number) {
+  // a nice trick to convert a number to a sting
+  const str = number + '';
+  const last = str.slice(-4);
+  return last.padStart(str.length, '*');
+};
+
+console.log(maskCreditCard(1234123412341234)); // ************1234
+console.log(maskCreditCard('5678567856785678')); // ************5678
+
+// REPEAT
+const weatherMessage = 'Bad weather... All Departures Delayed... \n';
+console.log(weatherMessage.repeat(5));
+
+// PRACTICE EXERCISE
+const planesInLine = function (n) {
+  console.log(`There are ${n} planes in line ${'✈'.repeat(n)}`);
+};
+
+planesInLine(5);
+ */
+// CHALLENGE #4
