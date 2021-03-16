@@ -1042,8 +1042,10 @@ console.log(new String('Jonas')); // [String: 'Jonas']
 console.log(typeof new String('Jonas')); // object
 console.log(typeof new String('Jonas').slice(1)); // string
  */
-/* 
+
 // WORKING WITH STRINGS - PART 2
+
+/* 
 const airline = 'TAP Air Portugal';
 
 console.log(airline.toLowerCase()); // tap air portugal
@@ -1104,7 +1106,9 @@ checkBaggage('I have a Laptop, some Food and a pocket Knife'); // You are NOT al
 checkBaggage('Socks and camera'); // Welcome aboard!
 checkBaggage('Got some snacks and a gun for protections'); // You are NOT allowed on board!
  */
+
 // WORKING WITH STRINGS - PART 3
+
 /* 
 // SPLIT
 console.log('a+very+nice+string'.split('+')); // [ 'a', 'very', 'nice', 'string' ]
@@ -1189,8 +1193,10 @@ Afterwards, test with your own test data!
 
 GOOD LUCK 😀
 */
+/* 
+// MY SOLUTION
 const variableNames = [
-  'underscore_case_variable\n',
+  'underscore_case_variable_foo\n',
   ' first_name\n',
   'Some_Variable\n',
   ' calculate_Age\n',
@@ -1198,32 +1204,88 @@ const variableNames = [
   'normalizedVariable',
 ];
 
-// const normalizeVariableNames = function (names) {
-//   for (const name of names) {
-//     // DELETE ALL SPACES AND LINE FEEDSZZ
-//     const trimmedName = name.trim();
-//     // CHAMGE TO LOWER CASE IF name HAS _
-//     const lowerCaseName =
-//       trimmedName.indexOf('_') !== -1 ? trimmedName.toLowerCase() : trimmedName;
-//     //
-//     const index = lowerCaseName.indexOf('_') + 1;
-//     const letter = lowerCaseName[index];
-//     const normalizedName = lowerCaseName.replace(
-//       `_${letter}`,
-//       letter.toUpperCase()
-//     );
-//     console.log(normalizedName);
-//   }
-// };
+const normalizeVariableNames = function (names) {
+  const output = [];
+  for (const [extI, name] of names.entries()) {
+    // DELETE ALL SPACES
+    const trimmedName = name.trim();
+    // CHANGE TO LOWER CASE IF name HAS _
+    const normalizedName =
+      trimmedName.indexOf('_') !== -1 ? trimmedName.toLowerCase() : trimmedName;
+    // SPLIT NAMES TO A LIST OF NAMES VIA '_'
+    const namesList = normalizedName.split('_');
+    // GET INDEX AND NAME PART FROM EACH SPLITTED VARIABLE NAME
+    let camelCaseName = '';
+    for (const [intI, intName] of namesList.entries()) {
+      // console.log(extI, intI, intName);
+      camelCaseName +=
+        intI === 0
+          ? intName
+          : intName.replace(intName[0], intName[0].toUpperCase());
+      // console.log(camelCaseName);
+      output[extI] = camelCaseName;
+    }
+  }
+  for (const [i, name] of output.entries()) {
+    console.log(`${name.padEnd(30)}${'✅'.repeat(i + 1)}`);
+  }
+};
 
 // normalizeVariableNames(variableNames);
 
+document.body.append(document.createElement('textarea'));
+document.body.append(document.createElement('button'));
+
+document.querySelector('button').addEventListener('click', () => {
+  const text = document.querySelector('textarea').value;
+  normalizeVariableNames(text.split('\n'));
+});
+ */
+/* 
 // TEACHER'S EXAMPLE
 document.body.append(document.createElement('textarea'));
 document.body.append(document.createElement('button'));
 
-const btn = document.querySelector('button');
-btn.addEventListener('click', () => {
+document.querySelector('button').addEventListener('click', function () {
   const text = document.querySelector('textarea').value;
-  console.log(text);
+  const rows = text.split('\n');
+
+  for (const [i, row] of rows.entries()) {
+    const [first, second] = row.toLowerCase().trim().split('_');
+    const output = `${first}${second.replace(
+      second[0],
+      second[0].toUpperCase()
+    )}`;
+    console.log(`${output.padEnd(20)}${'✅'.repeat(i + 1)}`);
+  }
 });
+ */
+// STRING METHODS PRACTICE
+// MY SOLUTION
+/* 
+const cleanedFlights = flights.replaceAll('_', ' ');
+const splittedFligths = cleanedFlights.split('+');
+for (const flightInfo of splittedFligths) {
+  const [flight, from, to, time] = flightInfo.split(';');
+  const message = `${
+    flight.indexOf('Delayed') === -1 ? flight : '🔴' + flight
+  } from ${from.slice(0, 3).toUpperCase()} to ${to
+    .slice(0, 3)
+    .toUpperCase()} (${time.replace(':', 'h')})`;
+  console.log(message.padStart(45));
+}
+ */
+// TEACHER'S EXAMPLE
+const formatStr = str => str.slice(0, 3).toUpperCase();
+
+for (const flight of flights.split('+')) {
+  const [type, from, to, time] = flight.split(';');
+  const output = `${type.startsWith('_Delayed') ? '🔴' : ''}${type.replaceAll(
+    '_',
+    ' '
+  )} from ${formatStr(from)} to ${formatStr(to)} (${time.replace(
+    ':',
+    'h'
+  )})`.padStart(45);
+  console.log(output);
+}
