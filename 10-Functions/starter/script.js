@@ -243,14 +243,6 @@ console.log(addVAT2(23)); // 28.29
  */
 
 // CHALLENGE #1
-const poll = {
-  question: 'What is your favourite programming language?',
-  options: ['0: JavaScript', '1: Python', '2: Rust', '3: C++'],
-  // This generates [0, 0, 0, 0]. More in the next section 😃
-  answers: new Array(4).fill(0),
-};
-console.log(poll);
-
 /* 
 Let's build a simple poll app!
 
@@ -281,3 +273,151 @@ BONUS TEST DATA 2: [1, 5, 3, 9, 6, 1]
 
 GOOD LUCK 😀
 */
+/* 
+const poll = {
+  question: 'What is your favourite programming language?',
+  options: ['0: JavaScript', '1: Python', '2: Rust', '3: C++'],
+  // This generates [0, 0, 0, 0]. More in the next section 😃
+  answers: new Array(4).fill(0),
+  registerNewAnswer() {
+    const answer = prompt(
+      `${this.question}\n${this.options.join('\n')}${'\n(Write option number)'}`
+    );
+    answer >= 0 && answer <= this.answers.length - 1 && answer !== null
+      ? this.answers[answer]++
+      : alert('Try again');
+    this.displayResults(this.answers);
+  },
+  displayResults(answers) {
+    Array.isArray(answers) && console.log(answers);
+    typeof answers === 'string' && console.log(`Poll results are ${answers}`);
+  },
+};
+
+document
+  .querySelector('.poll')
+  .addEventListener('click', poll.registerNewAnswer.bind(poll));
+
+poll.displayResults.call(poll, [5, 2, 3]);
+poll.displayResults.call(poll, [1, 5, 3, 9, 6, 1].join(', '));
+ */
+/* 
+// IMMEDIATELY INVOKED FUNCTION EXPRESSIONS (IIFE)
+const runOnce = function () {
+  console.log('This will never run again');
+};
+
+runOnce();
+
+// IIFE
+(function () {
+  console.log('This will never run again');
+  const isPrivate = 23;
+})();
+
+// console.log(isPrivate); // ReferenceError: isPrivate is not defined
+
+(() => console.log('This will ALSO never run again'))();
+
+{
+  const isPrivate = 23;
+  var notPrivate = 34;
+}
+// console.log(isPrivate); // ReferenceError: isPrivate is not defined
+console.log(notPrivate); // 34
+ */
+
+// CLOSURES
+/* 
+const secureBooking = function () {
+  let passengerCount = 0;
+
+  return function () {
+    passengerCount++;
+    console.log(`${passengerCount} passengers`);
+  };
+};
+
+const booker = secureBooking();
+
+// CLOSURES HAVE ACCESS TO THE VARIABLES THAT WERE PRESENT AT THE TIME THE FUNCTION WAS CREATED
+// A CLOSURE MAKES A FUNCTION REMEMBER ALL THE VARIABLES THAT EXISTED AT THE FUNCTION'S BIRTHPLACE
+booker();
+booker();
+booker();
+
+// A FUNCTION HAS ACCESS TO THE VARIABLE ENVIRONMENT (VE) OF THE EXECUTION CONTENT IN WHICH IT WAS CREATED
+// EVEN AFTER THAT EXECUTION CONTEXT HAS GONE
+// CLOSURE: VE ATTACHED TO THE FUNCTION, EXACTLY AS IT WAS AT THE TIME AND PLACE THE FUNCTION WAS CREATED
+
+console.dir(booker);
+// IN THE BROWSER CONSOLE
+// WHENEVER YOU SEE THESE BRACKETS HERE THAT MEANS THAT IT IS AN INTERNAL PROPERTY WHICH WE CANNOT ACCESS FROM OUR CODE
+// [[Scopes]]
+// Closure (secureBooking) {passengerCount: 3}
+ */
+// MORE CLOSER EXAMPLES
+// EXAMPLE 1
+/* 
+let f;
+
+const g = function () {
+  const a = 23;
+  f = function () {
+    console.log(a * 2);
+  };
+};
+
+const h = function () {
+  const b = 777;
+  f = function () {
+    console.log(b * 2);
+  };
+};
+
+// ASSIGNING f FUNCTION
+// CLOSED OVER THE VARIABLE ENVIRONMENT OF g FUNCTION
+g(); // ALREADY FINISHED ITS EXECUTION
+f(); // 46
+console.dir(f);
+// IN THE BROWSER CONSOLE
+// [[Scopes]]
+// Closere (g) {a: 23}
+
+// RE-ASSIGNING f FUNCTION
+// CLOSED OVER THE VARIABLE ENVIRONMENT OF h FUNCTION
+h(); // ALREADY FINISHED ITS EXECUTION
+f(); // 1554
+console.dir(f);
+
+// IN THE BROWSER CONSOLE
+// [[Scopes]]
+// Closere (h) {b: 777}
+ */
+// EXAMPLE 2
+/* 
+const boardPassengers = function (n, wait) {
+  const perGroup = n / 3;
+
+  setTimeout(function () {
+    console.log(`We are now boarding all ${n} passengers`);
+    console.log(`There are 3 groups, each with ${perGroup} passengers`);
+  }, wait * 1000);
+
+  console.log(`Will start boarding in ${wait} seconds`);
+};
+
+// CLOSERE HAVE PRIORITY OVER THE SCOPE CHAIN
+const perGroup = 1000; // IF THE SCOPE CHAIN HAD PRIORITY OVER THE CLOSURE THEN THIS CALLBACK FUNCTION WOULD USE THIS VARIABLE
+boardPassengers(180, 3);
+ */
+/* 
+// CHALLENGE #2
+(function () {
+  const header = document.querySelector('h1');
+  header.style.color = 'red';
+  document.querySelector('body').addEventListener('click', function () {
+    header.style.color = 'blue';
+  });
+})();
+ */
