@@ -3,7 +3,7 @@
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // BANKIST APP
-
+/* 
 // Data
 const account1 = {
   owner: 'Jonas Schmedtmann',
@@ -73,4 +73,281 @@ const currencies = new Map([
 
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
+// CHAPTER CREATING DOM ELEMENTS
+
+const displayMovements = function (movements) {
+  // EMPTY THE ENTIRE CONTAINER
+  containerMovements.innerHTML = '';
+
+  movements.forEach(function (mov, i) {
+    const type = mov > 0 ? 'deposit' : 'withdrawal';
+
+    const html = `<div class="movements__row">
+                    <div class="movements__type movements__type--${type}">${
+      i + 1
+    } ${type}</div>
+                    <div class="movements__value">${mov}</div>
+                  </div>`;
+    containerMovements.insertAdjacentHTML('afterbegin', html);
+  });
+};
+
+displayMovements(account1.movements);
+
+// CHAPTER COMPUTING USERNAMES
+
+// CREATING A FUNCTION WHICH RETURNS A NEW VALUE
+// const createUsernames = function (user) {
+//   const username = user
+//     .toLowerCase()
+//     .split(' ')
+//     .map(name => name[0])
+//     .join('');
+//   return username;
+// };
+// console.log(createUsernames('Steven Thomas Williams')); // stw
+
+// UPDATING (ADDING A NEW PROPERTY) EACH ACCOUNT OBJECT IN THE ACCOUNTS ARRAY
+const createUsernames = function (accs) {
+  accs.forEach(function (acc) {
+    // ADDING A NEW PROPERTY
+    acc.username = acc.owner
+      .toLowerCase()
+      .split(' ')
+      .map(name => name[0])
+      .join('');
+  });
+};
+createUsernames(accounts);
+console.table(accounts);
+
+// CHAPTER REDUSE METHOD CALCULATING BALANCE
+
+const displayBalance = function (movements) {
+  const balance = movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${balance} EUR`;
+};
+displayBalance(movements);
 /////////////////////////////////////////////////
+ */
+// CHAPTER SIMPLE ARRAY METHODS
+/* 
+// ---SLICE DOES NOT CHANGE THE ORIGINAL ARRAY
+let arr = ['a', 'b', 'c', 'd', 'e'];
+
+console.log(arr.slice(2)); // [ 'c', 'd', 'e' ]
+console.log(arr.slice(2, 4)); // [ 'c', 'd' ]
+console.log(arr.slice(-2)); // [ 'd', 'e' ]
+console.log(arr.slice(-1)); // [ 'e' ]
+console.log(arr.slice(1, -2)); // [ 'b', 'c' ]
+// WE CAN USE IT TO SIMPLY CREATE A SHALLOW COPY OF AN ARRAY
+console.log(arr.slice()); // [ 'a', 'b', 'c', 'd', 'e' ]
+console.log([...arr]); // [ 'a', 'b', 'c', 'd', 'e' ]
+
+// ---SPLICE DOES CHANGE THE ORIGINAL ARRAY
+console.log(arr.splice(2)); // [ 'c', 'd', 'e' ]
+arr.splice(-1); // PRETTY COMMON USE CASE IS TO SIMPLY REMOVE THE LAST ELEMENT OF AN ARRAY
+console.log(arr); // [ 'a']
+
+arr = ['a', 'b', 'c', 'd', 'e'];
+console.log(arr); // [ 'a', 'b', 'c', 'd', 'e' ]
+arr.splice(1, 2);
+console.log(arr); // [ 'a', 'd', 'e' ]
+arr.splice(0, 1, 'f');
+console.log(arr); // [ 'f', 'd', 'e' ]
+
+// ---REVERSE DOES CHANGE THE ORIGINAL ARRAY
+arr = ['a', 'b', 'c', 'd', 'e'];
+const arr2 = ['j', 'i', 'h', 'g', 'f'];
+console.log(arr2.reverse()); // [ 'f', 'g', 'h', 'i', 'j' ]
+console.log(arr2); // [ 'f', 'g', 'h', 'i', 'j' ]
+
+// ---CONCAT DOES NOT CHANGE THE ORIGINAL ARRAY
+const letters = arr.concat(arr2);
+console.log(letters); // ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+console.log([...arr, ...arr2]); // ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+
+// ---JOIN RETURNS A STRING WITH SPECIFIED SEPARATOR
+console.log(letters.join(' - ')); // a - b - c - d - e - f - g - h - i - j
+ */
+// CHAPTER LOOPING ARRAYS: FOREACH
+/* 
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+// for (const movement of movements) {
+for (const [i, movement] of movements.entries()) {
+  if (movement > 0) {
+    console.log(`Movement ${i}: You deposited ${movement}`);
+  } else {
+    console.log(`Movement ${i}: You withdrew ${Math.abs(movement)}`);
+  }
+}
+
+// ---FOREACH THE CONTINUE AND BREAK STATEMENTS DO NOT WORK
+// movements.forEach(movement => console.log(movement));
+console.log('-- FOREACH --');
+// movements.forEach(function (movement) {
+movements.forEach(function (mov, i, arr) {
+  if (mov > 0) {
+    console.log(`Movement ${i}: You deposited ${mov}`);
+  } else {
+    console.log(`Movement ${i}: You withdrew ${Math.abs(mov)}`);
+  }
+});
+// BEHIND THE SCENES
+// 0: function(200)
+// 1: function(450)
+// 2: function(-400)
+ */
+// CHAPTER FOREACH WITH MAPS AND SETS
+/* 
+// ---MAP DOES NOT HAVE INDEXES
+console.log('-- MAP --');
+const currencies = new Map([
+  ['USD', 'United States dollar'],
+  ['EUR', 'Euro'],
+  ['GBP', 'Pound sterling'],
+]);
+
+currencies.forEach(function (value, key, map) {
+  console.log(`${key}: ${value}`);
+});
+
+// ---SET DOES NOT HAVE INDEXES AND KEYS
+console.log('-- SET --');
+const currenciesUnique = new Set(['USD', 'GBP', 'USD', 'EUR', 'EUR']);
+console.log(currenciesUnique); // Set(3) { 'USD', 'GBP', 'EUR' }
+
+currenciesUnique.forEach(function (value, _, map) {
+  console.log(`${value}: ${value}`);
+});
+ */
+// CHAPTER PROJECT "BANKIST" APP
+
+// CHAPTER CODING CHALLENGE #1
+/* 
+Julia and Kate are doing a study on dogs. So each of them asked 5 dog owners about their dog's age, and stored the data into an array (one array for each). 
+For now, they are just interested in knowing whether a dog is an adult or a puppy. A dog is an adult if it is at least 3 years old, and it's a puppy if it's less than 3 years old.
+
+Create a function 'checkDogs', which accepts 2 arrays of dog's ages ('dogsJulia' and 'dogsKate'), and does the following things:
+
+1. Julia found out that the owners of the FIRST and the LAST TWO dogs actually have cats, not dogs!
+   So create a shallow copy of Julia's array, and remove the cat ages from that copied array (because it's a bad practice to mutate function parameters)
+2. Create an array with both Julia's (corrected) and Kate's data
+3. For each remaining dog, log to the console whether it's an adult ("Dog number 1 is an adult, and is 5 years old") or a puppy ("Dog number 2 is still a puppy 🐶")
+4. Run the function for both test datasets
+
+HINT: Use tools from all lectures in this section so far 😉
+
+TEST DATA 1: Julia's data [3, 5, 2, 12, 7], Kate's data [4, 1, 15, 8, 3]
+TEST DATA 2: Julia's data [9, 16, 6, 8, 3], Kate's data [10, 5, 6, 1, 4]
+
+GOOD LUCK 😀
+*/
+/* 
+const checkDogs = function (dogsJulia, dogsKate) {
+  // const dogsJuliaCorrected = dogsJulia.slice(1, -2);
+  // const dogsJuliaCorrected = dogsJulia.slice(1, 3);
+  const dogsJuliaCorrected = dogsJulia.slice();
+  dogsJuliaCorrected.splice(0, 1);
+  dogsJuliaCorrected.splice(-2);
+  const dogs = dogsJuliaCorrected.concat(dogsKate);
+  dogs.forEach(function (dog, i) {
+    const message =
+      dog >= 3 ? `an adult, and is ${dog} years old` : 'still a puppy 🐶';
+    console.log(`Dog number ${i + 1} is ${message}`);
+  });
+};
+
+console.log('-- TEST 1 --');
+checkDogs([3, 5, 2, 12, 7], [4, 1, 15, 8, 3]);
+console.log('-- TEST 2 --');
+checkDogs([9, 16, 6, 8, 3], [10, 5, 6, 1, 4]);
+ */
+// CHAPTER DATA TRANSFORMATIONS: MAP, FILTER, REDUCE
+
+// ---MAP
+// RETURNS A NEW ARRAY CONTAINING THE RESULTS OF APPLYING AN OPERATION ON ALL ORIGINAL ARRAY ELEMENTS
+
+// ---FILTER
+// RETURNS A NEW ARRAY CONTAINING THE ARRAY ELEMENTS THAT PASSED A SPECIFIED TEST CONDITION
+
+// ---REDUCE
+// BOILS ("REDUCES") ALL ARRAY ELEMENTS DOWN TO ONE SINGLE VALUE (E.G. ADDING ALL ELEMENTS TOGETHER)
+
+// CHAPTER THE MAP METHOD
+/* 
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+
+const eurToUsd = 1.1;
+
+// FUNCTIONAL PROGRAMMING PARADIGM
+const movementsUsd = movements.map(function (mov) {
+  return Math.trunc(mov * eurToUsd); // [220, 495, -440, 3300, -715, -143, 77, 1430];
+  // return 23; // [23, 23, 23, 23, 23, 23, 23, 23];
+});
+console.log(movementsUsd);
+
+// THE SAME EXAMPLE WITH THE FOR OF LOOP
+const movementsUsdForOf = [];
+for (const mov of movements) movementsUsdForOf.push(Math.trunc(mov * eurToUsd));
+console.log(movementsUsdForOf); // [220, 495, -440, 3300, -715, -143, 77, 1430];
+
+// USING ARROW FUNCTION
+const movementsUsdArrow = movements.map(mov => Math.trunc(mov * eurToUsd));
+console.log(movementsUsdArrow); // [220, 495, -440, 3300, -715, -143, 77, 1430];
+
+// EXAMPLE
+const movementsDescriptions = movements.map(
+  (mov, i) =>
+    `Movement ${i + 1}: You ${mov > 0 ? 'deposited' : 'withdrew'} ${Math.abs(
+      mov
+    )}`
+);
+console.log(movementsDescriptions);
+ */
+// CHAPTER THE FILTER METHOD
+/* 
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+
+const deposits = movements.filter(mov => mov > 0);
+console.log(deposits); // [ 200, 450, 3000, 70, 1300 ]
+
+const depositsForOf = [];
+for (const mov of movements) if (mov > 0) depositsForOf.push(mov);
+console.log(depositsForOf); // [ 200, 450, 3000, 70, 1300 ]
+
+const withdrawals = movements.filter(mov => mov < 0);
+console.log(withdrawals); // [ -400, -650, -130 ]
+ */
+// CHAPTER THE REDUCE METHOD
+/* 
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+
+// ACCUMULATOR -> SNOWBALL
+// const balance = movements.reduce(function (acc, cur, i, arr) {
+//   console.log(`Iteration ${i}: ${acc}`);
+//   return acc + cur;
+// }, 0);
+// console.log(balance);
+// Iteration 0: 0
+// Iteration 1: 200
+// Iteration 2: 650
+// Iteration 3: 250
+// Iteration 4: 3250
+// Iteration 5: 2600
+// Iteration 6: 2470
+// Iteration 7: 2540
+// 3840
+
+// const balance = movements.reduce((acc, cur) => acc + cur); // 3840
+const balance = movements.reduce((acc, cur) => acc + cur, 100); // 3940
+
+let balanceForOf = 0;
+for (const mov of movements) balanceForOf += mov;
+console.log(balanceForOf); // 3840
+
+// GET THE MAXIMUM VALUE
+const maxValue = movements.reduce((acc, cur) => (acc > cur ? acc : cur));
+console.log(maxValue); // 3000
+ */
+// CHAPTER CODING CHALLENGE #2
