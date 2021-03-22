@@ -1,9 +1,7 @@
 'use strict';
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// BANKIST APP
-/* 
+///////////////////////////////////////////////// THE BANKIST APP
+
 // Data
 const account1 = {
   owner: 'Jonas Schmedtmann',
@@ -86,13 +84,11 @@ const displayMovements = function (movements) {
                     <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
-                    <div class="movements__value">${mov}</div>
+                    <div class="movements__value">${mov}€</div>
                   </div>`;
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 };
-
-displayMovements(account1.movements);
 
 // CHAPTER COMPUTING USERNAMES
 
@@ -122,14 +118,63 @@ createUsernames(accounts);
 console.table(accounts);
 
 // CHAPTER REDUSE METHOD CALCULATING BALANCE
-
 const displayBalance = function (movements) {
   const balance = movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${balance} EUR`;
+  labelBalance.textContent = `${balance}€`;
 };
-displayBalance(movements);
-/////////////////////////////////////////////////
- */
+
+// CHAPTER THE MAGIG OF CHAINING METHODS - DISPLAY SUMMARY
+const displaySummary = function (account) {
+  const incomes = account.movements
+    .filter(mov => mov > 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumIn.textContent = `${incomes}€`;
+
+  const expenses = account.movements
+    .filter(mov => mov < 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumOut.textContent = `${Math.abs(expenses)}€`;
+
+  const interest = account.movements
+    .filter(mov => mov > 0)
+    .map(deposit => (deposit * account.interestRate) / 100)
+    // CHECK IF THE INTEREST > 1
+    .filter(int => int > 1)
+    .reduce((acc, int) => acc + int);
+  labelSumInterest.textContent = `${interest}€`;
+};
+
+// CHAPTER IMPLEMENTING LOGIN
+// EVENT HANDLER
+let currentAccount;
+btnLogin.addEventListener('click', function (e) {
+  // PREVENT FORM FROM SUBMITTING
+  e.preventDefault();
+  // FIND CERTAIN ACCOUNT VIA LOGIN USERNAME
+  currentAccount = accounts.find(
+    acc => acc.username === inputLoginUsername.value
+  );
+  // CHECK IF THE PIN IS CORRECT
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    // DISPLAY UI
+    containerApp.style.opacity = 100;
+    // DISPLAY MESSAGE
+    labelWelcome.textContent = `Welcome, ${currentAccount.owner.split(' ')[0]}`;
+    // CLEAR INPUT FIELDS
+    inputLoginUsername.value = inputLoginPin.value = '';
+    // BLUR FOCUS
+    inputLoginPin.blur();
+    // DISPLAY MOVEMENTS
+    displayMovements(currentAccount.movements);
+    // DISPLAY BALANCE
+    displayBalance(currentAccount.movements);
+    // DISPLAY SUMMARY
+    displaySummary(currentAccount);
+  }
+});
+
+///////////////////////////////////////////////// THE BANKIST APP END
+
 // CHAPTER SIMPLE ARRAY METHODS
 /* 
 // ---SLICE DOES NOT CHANGE THE ORIGINAL ARRAY
@@ -351,3 +396,122 @@ const maxValue = movements.reduce((acc, cur) => (acc > cur ? acc : cur));
 console.log(maxValue); // 3000
  */
 // CHAPTER CODING CHALLENGE #2
+/* 
+Let's go back to Julia and Kate's study about dogs. This time, they want to convert dog ages to human ages and calculate the average age of the dogs in their study.
+
+Create a function 'calcAverageHumanAge', which accepts an arrays of dog's ages ('ages'), and does the following things in order:
+
+1. Calculate the dog age in human years using the following formula: if the dog is <= 2 years old, humanAge = 2 * dogAge. If the dog is > 2 years old, humanAge = 16 + dogAge * 4.
+2. Exclude all dogs that are less than 18 human years old (which is the same as keeping dogs that are at least 18 years old)
+3. Calculate the average human age of all adult dogs (you should already know from other challenges how we calculate averages 😉)
+4. Run the function for both test datasets
+
+TEST DATA 1: [5, 2, 4, 1, 15, 8, 3]
+TEST DATA 2: [16, 6, 10, 5, 6, 1, 4]
+
+GOOD LUCK 😀
+*/
+/* 
+const calcAverageHumanAge = function (dogAges) {
+  const AverageHumanAge = dogAges
+    .map(dogAge => (dogAge <= 2 ? 2 * dogAge : 16 + dogAge * 4))
+    .filter(dogAges => dogAges >= 18)
+    .reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
+
+  console.log(Math.trunc(AverageHumanAge));
+};
+
+console.log('-- TEST 1 --');
+calcAverageHumanAge([5, 2, 4, 1, 15, 8, 3]);
+console.log('-- TEST 2 --');
+calcAverageHumanAge([16, 6, 10, 5, 6, 1, 4]);
+ */
+
+// CHAPTER THE MAGIC OF CHAINING METHODS
+/* 
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+const eurToUsd = 1.1;
+
+// PIPELINE
+const totalDepositsUSD = movements
+  .filter(mov => mov > 0) // RETURNS A NEW ARRAY
+  .map(mov => mov * eurToUsd) // RETURNS A NEW ARRAY
+  .reduce((acc, mov) => acc + mov, 0); // RETURNS A VALUE
+
+console.log(totalDepositsUSD);
+ */
+
+// CHAPTER CODING CHALLENGE #3
+/* 
+Rewrite the 'calcAverageHumanAge' function from the previous challenge, but this time as an arrow function, and using chaining!
+
+TEST DATA 1: [5, 2, 4, 1, 15, 8, 3]
+TEST DATA 2: [16, 6, 10, 5, 6, 1, 4]
+
+GOOD LUCK 😀
+*/
+/* 
+const calcAverageHumanAge = dogAges =>
+  dogAges
+    .map(dogAge => (dogAge <= 2 ? 2 * dogAge : 16 + dogAge * 4))
+    .filter(dogAges => dogAges >= 18)
+    .reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
+
+console.log('-- TEST 1 --');
+const avg1 = calcAverageHumanAge([5, 2, 4, 1, 15, 8, 3]);
+console.log(avg1);
+
+console.log('-- TEST 2 --');
+const avg2 = calcAverageHumanAge([16, 6, 10, 5, 6, 1, 4]);
+console.log(avg2);
+ */
+
+// CHAPTER THE FIND METHOD
+/* 
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+const firstWithdrawal = movements.find(mov => mov < 0); // RETURNS A VALUE
+console.log(movements); // [200, 450, -400, 3000, -650, -130, 70, 1300];
+console.log(firstWithdrawal); // -400
+
+// EXAMPLE
+const account1 = {
+  owner: 'Jonas Schmedtmann',
+  movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
+  interestRate: 1.2, // %
+  pin: 1111,
+};
+
+const account2 = {
+  owner: 'Jessica Davis',
+  movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
+  interestRate: 1.5,
+  pin: 2222,
+};
+
+const account3 = {
+  owner: 'Steven Thomas Williams',
+  movements: [200, -200, 340, -300, -20, 50, 400, -460],
+  interestRate: 0.7,
+  pin: 3333,
+};
+
+const account4 = {
+  owner: 'Sarah Smith',
+  movements: [430, 1000, 700, 50, 90],
+  interestRate: 1,
+  pin: 4444,
+};
+
+const accounts = [account1, account2, account3, account4];
+
+const account = accounts.find(acc => (acc.owner = 'Steven Thomas Williams'));
+console.log(account);
+
+// THE SAME AS ABOVE JUST USING FOR OF LOOP
+let accountForOf;
+for (const acc of accounts)
+  acc.owner === 'Steven Thomas Williams' && (accountForOf = acc);
+console.log(accountForOf);
+ */
+
+// CHAPTER IMPLEMENTING LOGIN
