@@ -71,13 +71,17 @@ const currencies = new Map([
 
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
-// CHAPTER CREATING DOM ELEMENTS
+// CHAPTER: CREATING DOM ELEMENTS DISPLAY MOVEMENTS
+// CHAPTER: SORTING ARRAYS SORT MOVEMENTS
 
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   // EMPTY THE ENTIRE CONTAINER
   containerMovements.innerHTML = '';
-
-  movements.forEach(function (mov, i) {
+  // SORTING MOVEMENTS
+  const sortingMovements = sort
+    ? movements.slice().sort((a, b) => a - b)
+    : movements;
+  sortingMovements.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
 
     const html = `<div class="movements__row">
@@ -90,7 +94,7 @@ const displayMovements = function (movements) {
   });
 };
 
-// CHAPTER COMPUTING USERNAMES
+// CHAPTER: COMPUTING USERNAMES
 
 // CREATING A FUNCTION WHICH RETURNS A NEW VALUE
 // const createUsernames = function (user) {
@@ -115,15 +119,24 @@ const createUsernames = function (accs) {
   });
 };
 createUsernames(accounts);
-console.table(accounts);
 
-// CHAPTER REDUSE METHOD CALCULATING BALANCE
-const displayBalance = function (movements) {
-  const balance = movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${balance}€`;
+// UPDATE UI FUNCTION
+const updateUI = function (account) {
+  // DISPLAY MOVEMENTS
+  displayMovements(account.movements);
+  // DISPLAY BALANCE
+  displayBalance(account);
+  // DISPLAY SUMMARY
+  displaySummary(account);
 };
 
-// CHAPTER THE MAGIG OF CHAINING METHODS - DISPLAY SUMMARY
+// CHAPTER: REDUSE METHOD CALCULATING BALANCE
+const displayBalance = function (account) {
+  account.balance = account.movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${account.balance}€`;
+};
+
+// CHAPTER: THE MAGIG OF CHAINING METHODS - DISPLAY SUMMARY
 const displaySummary = function (account) {
   const incomes = account.movements
     .filter(mov => mov > 0)
@@ -144,7 +157,7 @@ const displaySummary = function (account) {
   labelSumInterest.textContent = `${interest}€`;
 };
 
-// CHAPTER IMPLEMENTING LOGIN
+// CHAPTER: IMPLEMENTING LOGIN
 // EVENT HANDLER
 let currentAccount;
 btnLogin.addEventListener('click', function (e) {
@@ -164,18 +177,95 @@ btnLogin.addEventListener('click', function (e) {
     inputLoginUsername.value = inputLoginPin.value = '';
     // BLUR FOCUS
     inputLoginPin.blur();
-    // DISPLAY MOVEMENTS
-    displayMovements(currentAccount.movements);
-    // DISPLAY BALANCE
-    displayBalance(currentAccount.movements);
-    // DISPLAY SUMMARY
-    displaySummary(currentAccount);
+    // UPDATE UI
+    updateUI(currentAccount);
   }
+});
+
+// CHAPTER: IMPLEMENTING TRANSFERS
+
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+  // GET RECEIVER ACCOUNT VIA TRANSFER TO INPUT FIELD VALUE FROM ACCOUNTS
+  const receiverAccount = accounts.find(
+    acc => acc.username === inputTransferTo.value
+  );
+  // GET VALUE FROM AMOUNT INPUT FIELD
+  const amount = Number(inputTransferAmount.value);
+  // CLEAR INPUT FIELDS
+  inputTransferTo.value = inputTransferAmount.value = '';
+  // CHECK POSITIVE NUMBER & HAS ENOUGH MONEY & RECEIVER IS NOT CURRENT USER
+  if (
+    amount > 0 &&
+    currentAccount.balance >= amount &&
+    receiverAccount &&
+    receiverAccount.username !== currentAccount.username
+  ) {
+    // from current account
+    currentAccount.movements.push(-amount);
+    // to receiver
+    receiverAccount.movements.push(amount);
+    // UPDATE UI
+    updateUI(currentAccount);
+  }
+});
+
+// CHAPTER: SOME AND EVERY - LOAN
+
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+  // IF THERE IS AT LEAST ONE DEPOSIT >= 10% OF REQUESTED AMOUNT
+  const isAllowed = currentAccount.movements.some(mov => mov >= amount * 0.1);
+  if (isAllowed && amount > 0) {
+    currentAccount.movements.push(amount);
+    // UPDATE UI
+    updateUI(currentAccount);
+  } else {
+    console.log(`You can not loan ${amount}`);
+  }
+  // CLEAR INPUT FIELD
+  inputLoanAmount.value = '';
+});
+
+// CHAPTER: THE FINDINDEX METHOD - CLOSE
+
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    // FIND AND DELETE ACCOUNT BY INDEX
+    const index = accounts.findIndex(
+      account => account.username === currentAccount.username
+    );
+    accounts.splice(index, 1);
+    console.table(accounts);
+    // HIDE UI
+    containerApp.style.opacity = 0;
+  }
+  // CLEAR INPUT FIELDS
+  inputCloseUsername.value = inputClosePin.value = '';
+});
+
+// CHAPTER: SORTING ARRAYS SORT MOVEMENTS BUTTON
+let isSorted = false;
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  if (isSorted) {
+    isSorted = false;
+    btnSort.innerHTML = '&downarrow; SORT';
+  } else {
+    isSorted = true;
+    btnSort.innerHTML = '&uparrow; SORT';
+  }
+  displayMovements(currentAccount.movements, isSorted);
 });
 
 ///////////////////////////////////////////////// THE BANKIST APP END
 
-// CHAPTER SIMPLE ARRAY METHODS
+// CHAPTER: SIMPLE ARRAY METHODS
 /* 
 // ---SLICE DOES NOT CHANGE THE ORIGINAL ARRAY
 let arr = ['a', 'b', 'c', 'd', 'e'];
@@ -215,7 +305,7 @@ console.log([...arr, ...arr2]); // ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
 // ---JOIN RETURNS A STRING WITH SPECIFIED SEPARATOR
 console.log(letters.join(' - ')); // a - b - c - d - e - f - g - h - i - j
  */
-// CHAPTER LOOPING ARRAYS: FOREACH
+// CHAPTER: LOOPING ARRAYS: FOREACH
 /* 
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 // for (const movement of movements) {
@@ -243,7 +333,7 @@ movements.forEach(function (mov, i, arr) {
 // 1: function(450)
 // 2: function(-400)
  */
-// CHAPTER FOREACH WITH MAPS AND SETS
+// CHAPTER: FOREACH WITH MAPS AND SETS
 /* 
 // ---MAP DOES NOT HAVE INDEXES
 console.log('-- MAP --');
@@ -266,9 +356,9 @@ currenciesUnique.forEach(function (value, _, map) {
   console.log(`${value}: ${value}`);
 });
  */
-// CHAPTER PROJECT "BANKIST" APP
+// CHAPTER: PROJECT "BANKIST" APP
 
-// CHAPTER CODING CHALLENGE #1
+// CHAPTER: CODING CHALLENGE #1
 /* 
 Julia and Kate are doing a study on dogs. So each of them asked 5 dog owners about their dog's age, and stored the data into an array (one array for each). 
 For now, they are just interested in knowing whether a dog is an adult or a puppy. A dog is an adult if it is at least 3 years old, and it's a puppy if it's less than 3 years old.
@@ -308,7 +398,7 @@ checkDogs([3, 5, 2, 12, 7], [4, 1, 15, 8, 3]);
 console.log('-- TEST 2 --');
 checkDogs([9, 16, 6, 8, 3], [10, 5, 6, 1, 4]);
  */
-// CHAPTER DATA TRANSFORMATIONS: MAP, FILTER, REDUCE
+// CHAPTER: DATA TRANSFORMATIONS: MAP, FILTER, REDUCE
 
 // ---MAP
 // RETURNS A NEW ARRAY CONTAINING THE RESULTS OF APPLYING AN OPERATION ON ALL ORIGINAL ARRAY ELEMENTS
@@ -319,7 +409,7 @@ checkDogs([9, 16, 6, 8, 3], [10, 5, 6, 1, 4]);
 // ---REDUCE
 // BOILS ("REDUCES") ALL ARRAY ELEMENTS DOWN TO ONE SINGLE VALUE (E.G. ADDING ALL ELEMENTS TOGETHER)
 
-// CHAPTER THE MAP METHOD
+// CHAPTER: THE MAP METHOD
 /* 
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
@@ -350,7 +440,7 @@ const movementsDescriptions = movements.map(
 );
 console.log(movementsDescriptions);
  */
-// CHAPTER THE FILTER METHOD
+// CHAPTER: THE FILTER METHOD
 /* 
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
@@ -364,7 +454,7 @@ console.log(depositsForOf); // [ 200, 450, 3000, 70, 1300 ]
 const withdrawals = movements.filter(mov => mov < 0);
 console.log(withdrawals); // [ -400, -650, -130 ]
  */
-// CHAPTER THE REDUCE METHOD
+// CHAPTER: THE REDUCE METHOD
 /* 
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
@@ -395,7 +485,7 @@ console.log(balanceForOf); // 3840
 const maxValue = movements.reduce((acc, cur) => (acc > cur ? acc : cur));
 console.log(maxValue); // 3000
  */
-// CHAPTER CODING CHALLENGE #2
+// CHAPTER: CODING CHALLENGE #2
 /* 
 Let's go back to Julia and Kate's study about dogs. This time, they want to convert dog ages to human ages and calculate the average age of the dogs in their study.
 
@@ -427,7 +517,7 @@ console.log('-- TEST 2 --');
 calcAverageHumanAge([16, 6, 10, 5, 6, 1, 4]);
  */
 
-// CHAPTER THE MAGIC OF CHAINING METHODS
+// CHAPTER: THE MAGIC OF CHAINING METHODS
 /* 
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 const eurToUsd = 1.1;
@@ -441,7 +531,7 @@ const totalDepositsUSD = movements
 console.log(totalDepositsUSD);
  */
 
-// CHAPTER CODING CHALLENGE #3
+// CHAPTER: CODING CHALLENGE #3
 /* 
 Rewrite the 'calcAverageHumanAge' function from the previous challenge, but this time as an arrow function, and using chaining!
 
@@ -466,7 +556,7 @@ const avg2 = calcAverageHumanAge([16, 6, 10, 5, 6, 1, 4]);
 console.log(avg2);
  */
 
-// CHAPTER THE FIND METHOD
+// CHAPTER: THE FIND METHOD
 /* 
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 const firstWithdrawal = movements.find(mov => mov < 0); // RETURNS A VALUE
@@ -514,4 +604,98 @@ for (const acc of accounts)
 console.log(accountForOf);
  */
 
-// CHAPTER IMPLEMENTING LOGIN
+// CHAPTER: SOME AND EVERY
+/* 
+// ---SOME METHOD
+console.log(movements); // [200, 450, -400, 3000, -650, -130, 70, 1300]
+
+// EQUALITY
+console.log(movements.includes(-130)); // true
+// THE SAME AS ABOVE
+console.log(movements.some(mov => mov === -130)); // true
+
+// ONE OF ELEMEMENTS CONDITION
+console.log(movements.some(mov => mov > 0)); // true
+console.log(movements.some(mov => mov > 5000)); // false
+console.log(movements.some(mov => mov > 1500)); // true
+
+// ---EVERY METHOD
+// EVERY ELEMENT CONDITION
+console.log(movements.every(mov => mov > 0)); // false
+
+console.log(account4.movements); // [430, 1000, 700, 50, 90]
+console.log(account4.movements.every(mov => mov > 0)); // true
+
+// ---SEPARATE CALLBACK
+console.log('-- SEPARATE CALLBACK --');
+const deposit = mov => mov > 0;
+console.log(movements.some(deposit)); // true
+console.log(movements.every(deposit)); // false
+console.log(movements.filter(deposit)); // [200, 450, 3000, 70, 1300]
+ */
+// CHAPTER: FLAT AND FLATMAP
+/* 
+// ---FLAT: REMOVES ALL NESTED ARRAYS AND FLATTENS THE ARRAY
+const arr = [[1, 2, 3], [4, 5, 6], 7, 8, 9];
+console.log(arr.flat()); // [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+const arrDeep = [[1, [2, 3]], [[4, 5], 6], 7, 8, 9];
+console.log(arrDeep.flat()); // [ 1, [ 2, 3 ], [ 4, 5 ], 6, 7, 8, 9 ]
+
+console.log(arrDeep.flat().flat()); //  [1, 2, 3, 4, 5, 6, 7, 8, 9]
+console.log(arrDeep.flat(2)); //  [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+// ---EXAMPLE
+const accountMovements = accounts.map(acc => acc.movements);
+console.table(accountMovements);
+
+const allMovements = accountMovements.flat();
+console.log(allMovements); // [200, 450, -400, 3000, -650, -130, 70, 1300, 5000, 3400, -150, -790, -3210, -1000, 8500, -30, 200, -200, 340, -300, -20, 50, 400, -460, 430, 1000, 700, 50, 90]
+
+const overallBalance = allMovements.reduce((acc, mov) => acc + mov, 0);
+console.log(overallBalance); // 17840
+
+// ---WE CAN JUST CHAIN IT
+const overallBalanceChained = accounts
+  .map(account => account.movements)
+  .flat()
+  .reduce((acc, mov) => acc + mov);
+console.log(overallBalanceChained); // 17840
+
+// ---FLATMAP: COMBINES BOTH FLAT AND MAP METHODS WITH BETTER PERFORMANCE BUT GOES ONLY ONE LEVEL DEEP
+const overallBalanceFlatMap = accounts
+  .flatMap(account => account.movements)
+  .reduce((acc, mov) => acc + mov);
+console.log(overallBalanceFlatMap); // 17840
+ */
+
+// CHAPTER: SORTING ARRAYS
+/* 
+// ---SORT: STRINGS
+const owners = accounts.map(account => account.owner.split(' ')[0]);
+console.log(owners); // ["Jonas", "Jessica", "Steven", "Sarah"]
+console.log(owners.sort()); // ["Jessica", "Jonas", "Sarah", "Steven"]
+
+// ---SORT: NUMBERS
+console.log(movements); // [200, 450, -400, 3000, -650, -130, 70, 1300]
+// RETURN < 0, A, B (KEEP ORDER)
+// RETURN > 0, B, A (SWITCH ORDER)
+movements.sort((a, b) => {
+  if (a > b) return 1;
+  if (b > a) return -1;
+}); // ASCENDING
+console.log(movements); // [-650, -400, -130, 70, 200, 450, 1300, 3000]
+
+movements.sort((a, b) => {
+  if (a > b) return -1;
+  if (b > a) return 1;
+}); // DESCENDING
+console.log(movements); // [3000, 1300, 450, 200, 70, -130, -400, -650]
+
+// OR YOU CAN WRITE LIKE THIS
+movements.sort((a, b) => a - b);
+console.log(movements); // [-650, -400, -130, 70, 200, 450, 1300, 3000]
+
+movements.sort((a, b) => b - a);
+console.log(movements); // [3000, 1300, 450, 200, 70, -130, -400, -650]
+ */
