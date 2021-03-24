@@ -244,6 +244,8 @@ btnClose.addEventListener('click', function (e) {
     console.table(accounts);
     // HIDE UI
     containerApp.style.opacity = 0;
+    // CLEAR WELCOME LABEL
+    labelWelcome.textContent = 'Log in to get started';
   }
   // CLEAR INPUT FIELDS
   inputCloseUsername.value = inputClosePin.value = '';
@@ -699,3 +701,138 @@ console.log(movements); // [-650, -400, -130, 70, 200, 450, 1300, 3000]
 movements.sort((a, b) => b - a);
 console.log(movements); // [3000, 1300, 450, 200, 70, -130, -400, -650]
  */
+
+// CHAPTER: MORE WAYS OF CREATING AND FILLING ARRAYS
+/* 
+// ---NEW ARRAY()
+const arr = [1, 2, 3, 4, 5, 6, 7]; // [1, 2, 3, 4, 5, 6, 7]
+console.log(new Array(1, 2, 3, 4, 5, 6, 7)); // [1, 2, 3, 4, 5, 6, 7]
+
+// IF WE DON'T KNOW ABOUT THIS SPECIAL PARTICULARITY OF THE ARRAY() CONSTRUCTOR FUNCTION
+// THEN THIS CAN LEAD TO WIERD ERRORS
+// WE JUST CREATED AN EMPTY ARRAY WICH LENGTH IS 7
+const x = new Array(7);
+console.log(x); // [empty × 7]
+console.log(x.length); // 7
+// BUT WE CANNOT CALL THE MAP() METHOD ON IT TO FILL IT UP
+console.log(x.map(() => 5)); // [empty × 7]
+
+// ---FILL() METHOD
+// TO FILL THIS ARRAY WE CAN USE FILL() METHOD
+// WE CAN SPECIFY BEGIN AND END INDEXES
+console.log(x.fill(2, 3, 5)); // empty × 3, 2, 2, empty × 2]
+// OR JUST FILL IT WITHOUT SPECIFING ANY BEGIN OR END INDEXES
+x.fill(1);
+console.log(x); // [1, 1, 1, 1, 1, 1, 1]
+
+// WE CAN USE FILL() METHOD ON ANY ARRAY
+console.log(arr.fill(23, 2, 6)); // [1, 2, 23, 23, 23, 23, 7]
+
+// ---FROM() METHOD: CREATES NEW ARRAY
+const y = Array.from({ length: 7 }, () => 1);
+console.log(y); // [1, 1, 1, 1, 1, 1, 1]
+
+// IF WE DO NOT USE SOME ELEMENTS WE CAN SIMPLY WRITE AN UNDERSCORE
+const z = Array.from({ length: 7 }, (_, i) => i + 1);
+console.log(z); // [1, 2, 3, 4, 5, 6, 7]
+
+// A TASK TO CREATE AN ARRAY WITH 100 RANDOM DICE ROLLS
+const rolls = Array.from(
+  { length: 100 },
+  () => Math.trunc(Math.random() * 6) + 1
+);
+console.log(rolls);
+
+// WE CAN CONVERT ANY ITERABLES LIKE STRINGS, MAPS OR SETS TO REAL ARRAYS USING ARRAY.FROM()
+// ANOTHER ARRAY LIKE STRUCTURE THAT WE CAN USE TO CONVERT IS RESULT OF QUERYSELECTORALL() WHICH IS A NODELIST OBJECT
+// SO WE CAN USE THEN ARRAY METHODS ON IT
+
+// A TASK TO GET ALL MOVEMENTS FROM THE UI AND GET THEIR SUM
+// WE WILL NEED TO GET ALL THE ELEMENTS WITH QUERYSELECTORALL AND CONVERT IT TO AN ARRAY
+// ADD EVENTHANDLER ON BALANCE LABEL TO GET ELEMENTS FROM LOADED UI
+labelBalance.addEventListener('click', function () {
+  // GET ALL ELEMENTS IN A NODELIST VIA CLASS NAME AND CONVERT THEM TO AN ARRAY
+  const movementsUI = Array.from(
+    document.querySelectorAll('.movements__value'),
+    // AS SECOND ARGUMENT WE USE THE MAPPING FUNCTION
+    // WE NEED TO GET RID OF EURO SIGNS AND CONVERT STRINGS TO NUMBERS
+    el => Number(el.textContent.replace('€', ''))
+    // SO WE CAN GET THE SUM
+  ).reduce((acc, mov) => acc + mov);
+  console.log(movementsUI);
+
+  // WE CAN ALSO USE SPREAD OPERATOR TO CONVERT A NODELIST TO AN ARRAY
+  // BUT THEN WE WOULD HAVE TO DO THE MAPPING SEPARATELY
+  console.log([...document.querySelectorAll('.movements__value')]);
+});
+ */
+
+// CHAPTER: ARRAY METHODS PRACTICE
+
+// CALCULATE HOW MUCH HAS BEEN DEPOSITED IN TOTAL IN THE BACK
+const bankDepositSum = accounts
+  .flatMap(account => account.movements)
+  .filter(mov => mov > 0)
+  .reduce((acc, mov) => acc + mov, 0);
+console.log(bankDepositSum); // 25180
+
+// CALCULATE HOW MANY DEPOSITES THERE HAVE BEEN IN THE BANK WITH AT LEAST $1000
+const numDeposits1000 = accounts
+  .flatMap(account => account.movements)
+  .filter(mov => mov >= 1000).length;
+console.log(numDeposits1000); // 6
+
+const numDeposits1000Reduce = accounts
+  .flatMap(account => account.movements)
+  .reduce((acc, mov) => (mov >= 1000 ? ++acc : acc), 0); // 6
+
+console.log(numDeposits1000Reduce);
+
+// HOW WORK INCREASE AND DECREASE OPERATORS: PREFIX
+// RETURNS THE VALUE THEN INCREASES IT BY 1
+let a = 10;
+console.log(a++); // 10
+console.log(a); // 11
+// HOW WORK INCREASE AND DECREASE OPERATORS: POSTFIX
+// INCREASES THE VALUE BY 1 AND RETURNS IT
+let b = 20;
+console.log(++b); // 21
+console.log(b); // 21
+
+// CALCULATE ALL DEPOSITS AND ALL WITHDRAWALS IN ONE OBJECT
+const sums = accounts
+  .flatMap(account => account.movements)
+  .reduce(
+    (acc, cur) => {
+      // cur > 0 ? (acc.deposites += cur) : (acc.withdrawals += cur);
+      acc[cur > 0 ? 'deposites' : 'withdrawals'] += cur;
+      return acc;
+    },
+    { deposites: 0, withdrawals: 0 }
+  );
+console.log(sums); // {deposites: 25180, withdrawals: -7340}
+
+const { deposites, withdrawals } = sums;
+console.log(deposites, withdrawals); // 25180 -7340
+
+// WRITE A FUNCTION THAT CONVERTS STRINGS TO CAPITALIZED
+// this is a nice title -> This Is a Nice Title
+const capitalize = function (str) {
+  const exceptions = ['a', 'an', 'the', 'but', 'or', 'on', 'in', 'with'];
+  return str
+    .toLowerCase()
+    .split(' ')
+    .map(word =>
+      exceptions.some(letter => letter === word)
+        ? word
+        : word.replace(word[0], word[0].toUpperCase())
+    )
+    .join(' ');
+};
+
+console.log(
+  capitalize('thiS is a nice and CLEAR title with some meaning in it')
+);
+
+// const test = ['a', 'b', 'c'];
+// console.log(test.some(l => l === 'a'));
