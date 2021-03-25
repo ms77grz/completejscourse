@@ -769,14 +769,14 @@ labelBalance.addEventListener('click', function () {
 
 // CHAPTER: ARRAY METHODS PRACTICE
 
-// CALCULATE HOW MUCH HAS BEEN DEPOSITED IN TOTAL IN THE BACK
+// ---CALCULATE HOW MUCH HAS BEEN DEPOSITED IN TOTAL IN THE BACK
 const bankDepositSum = accounts
   .flatMap(account => account.movements)
   .filter(mov => mov > 0)
   .reduce((acc, mov) => acc + mov, 0);
 console.log(bankDepositSum); // 25180
 
-// CALCULATE HOW MANY DEPOSITES THERE HAVE BEEN IN THE BANK WITH AT LEAST $1000
+// ---CALCULATE HOW MANY DEPOSITES THERE HAVE BEEN IN THE BANK WITH AT LEAST $1000
 const numDeposits1000 = accounts
   .flatMap(account => account.movements)
   .filter(mov => mov >= 1000).length;
@@ -788,7 +788,7 @@ const numDeposits1000Reduce = accounts
 
 console.log(numDeposits1000Reduce);
 
-// HOW WORK INCREASE AND DECREASE OPERATORS: PREFIX
+// ---HOW WORK INCREASE AND DECREASE OPERATORS: PREFIX
 // RETURNS THE VALUE THEN INCREASES IT BY 1
 let a = 10;
 console.log(a++); // 10
@@ -815,24 +815,21 @@ console.log(sums); // {deposites: 25180, withdrawals: -7340}
 const { deposites, withdrawals } = sums;
 console.log(deposites, withdrawals); // 25180 -7340
 
-// WRITE A FUNCTION THAT CONVERTS STRINGS TO CAPITALIZED
+// ---WRITE A FUNCTION THAT CONVERTS ANY RANDOM CASED STRINGS TO CAPITALIZED FORMAT
 // this is a nice title -> This Is a Nice Title
 const capitalize = function (str) {
-  const exceptions = ['a', 'an', 'the', 'but', 'or', 'on', 'in', 'with'];
+  const exceptions = ['a', 'an', 'and', 'the', 'but', 'or', 'on', 'in', 'with'];
   return str
     .toLowerCase()
     .split(' ')
-    .map(word =>
-      exceptions.some(letter => letter === word)
+    .map((word, i) =>
+      exceptions.includes(word) && i > 0
         ? word
-        : word.replace(word[0], word[0].toUpperCase())
+        : word[0].toUpperCase() + word.slice(1)
     )
     .join(' ');
 };
 
 console.log(
-  capitalize('thiS is a nice and CLEAR title with some meaning in it')
+  capitalize('and thiS is a nice and CLEAR title withOUT Any meaning in it') // This Is a Nice and Clear Title with Some Meaning in It
 );
-
-// const test = ['a', 'b', 'c'];
-// console.log(test.some(l => l === 'a'));
