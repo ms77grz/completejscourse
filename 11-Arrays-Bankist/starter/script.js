@@ -130,7 +130,7 @@ const updateUI = function (account) {
   displaySummary(account);
 };
 
-// CHAPTER: REDUSE METHOD CALCULATING BALANCE
+// CHAPTER: REDUCE METHOD CALCULATING BALANCE
 const displayBalance = function (account) {
   account.balance = account.movements.reduce((acc, mov) => acc + mov, 0);
   labelBalance.textContent = `${account.balance}€`;
