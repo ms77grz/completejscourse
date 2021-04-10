@@ -21,9 +21,9 @@ const account1 = {
     '2020-01-28T09:15:04.904Z',
     '2020-04-01T10:17:24.185Z',
     '2020-05-08T14:11:59.604Z',
-    '2020-05-27T17:01:17.194Z',
-    '2020-07-11T23:36:17.929Z',
-    '2020-07-12T10:51:36.790Z',
+    '2021-04-03T17:08:56.566Z',
+    '2021-04-08T17:08:56.566Z',
+    '2021-04-09T17:08:56.566Z',
   ],
   currency: 'EUR',
   locale: 'pt-PT', // de-DE
@@ -81,12 +81,21 @@ const inputClosePin = document.querySelector('.form__input--pin');
 /////////////////////////////////////////////////
 // Functions
 const getFullDate = function (date) {
+  const calcDaysPassed = (date1, date2) =>
+    Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
+  const daysPassed = calcDaysPassed(new Date(), date);
+
+  if (daysPassed === 0) return 'today';
+  if (daysPassed === 1) return 'yesterday';
+  if (daysPassed <= 7) return `${daysPassed} days ago`;
+
   const day = `${date.getDate()}`.padStart(2, 0);
   const month = `${date.getMonth() + 1}`.padStart(2, 0);
   const year = date.getFullYear();
-  const hour = `${date.getHours()}`.padStart(2, 0);
-  const min = `${date.getMinutes()}`.padStart(2, 0);
-  return `${day}/${month}/${year}, ${hour}:${min}`;
+  // const hour = `${date.getHours()}`.padStart(2, 0);
+  // const min = `${date.getMinutes()}`.padStart(2, 0);
+  // return `${day}/${month}/${year}, ${hour}:${min}`;
+  return `${day}/${month}/${year}`;
 };
 
 const displayMovements = function (acc, sort = false) {
@@ -503,3 +512,18 @@ console.log(Date.now()); // 1616768753913
 future.setFullYear(2040);
 console.log(future); // Mon Nov 19 2040 15:23:05 GMT+0300 (Moscow Standard Time)
  */
+
+// CHAPTER: OPERATIONS WITH DATES
+
+const future = new Date(2037, 10, 19, 15, 23);
+console.log(future); // Thu Nov 19 2037 15:23:00 GMT+0300 (Moscow Standard Time)
+console.log(+future); // 2142246180000
+
+const calcDaysPassed = (date1, date2) =>
+  // RETURN DAYS FROM MILLISECONDS
+  Math.abs(date2 - date1) / (1000 * 60 * 60 * 24);
+const days1 = calcDaysPassed(new Date(2037, 3, 14), new Date(2037, 3, 24));
+const days2 = calcDaysPassed(new Date(2037, 3, 14), new Date(2037, 3, 4));
+
+console.log(days1); // 10
+console.log(days2); // 10
