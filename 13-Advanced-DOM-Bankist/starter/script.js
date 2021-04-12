@@ -85,7 +85,7 @@ document
  */
 
 // CHAPTER: SELECTING, CREATING, AND DELETING ELEMENTS
-
+/* 
 const header = document.querySelector('.header');
 const message = document.createElement('div');
 message.classList.add('cookie-message');
@@ -166,6 +166,84 @@ logo.classList.toggle('nav__logo--primary'); // REMOVES CLASS IF IT EXISTS
 console.log(logo.className); // nav__logo
 console.log(logo.classList.contains('nav__logo')); // true
 
-// DO NOT USE BECAUSE IT WILL OVERWRITE THE EXISTING CLASSES FROM THE ELEMENT
+// ---DO NOT USE BECAUSE IT WILL OVERWRITE THE EXISTING CLASSES FROM THE ELEMENT
 logo.className = 'nav__logo--secondary';
 console.log(logo.className); // nav__logo--secondary
+ */
+
+// CHAPTER: IMPLEMENTING SMOOTH SCROLLING
+/* 
+// ---OLD SCHOOL EXAMPLE
+const btnScrollTo = document.querySelector('.btn--scroll-to');
+console.log(btnScrollTo);
+const section1 = document.querySelector('#section--1');
+console.log(section1);
+
+btnScrollTo.addEventListener('click', e => {
+  // ---FIRST GET SECTION COORDINATES
+  const s1coords = section1.getBoundingClientRect();
+  // ---BOUNDINGCLIENTRECT IS RELATIVE TO THE VISIBLE VIEWPORT
+  console.log(s1coords); // {"x": 0,"y": 765,"width": 1905,"height": 2017.5,"top": 765,"right": 1905,"bottom": 2782.5,"left": 0}
+  // ---THEN GET COORDS OF THE BUTTON
+  console.log(e.target.getBoundingClientRect()); // {"x": 377.5,"y": 490.484375,"width": 110,"height": 29,"top": 490.484375,"right": 487.5,"bottom": 519.484375,"left": 377.5}
+  // ---GET CURRENT SCROLL POSITION
+  console.log(
+    'Current scroll position (X/Y)',
+    window.pageXOffset,
+    window.pageYOffset
+  ); // Current scroll position (X/Y) 0 0
+  // ---GET WINDOW WIDTH AND HEIGHT
+  console.log(
+    'The window height and width',
+    document.documentElement.clientHeight,
+    document.documentElement.clientWidth
+  ); // The window height and width 766 1905
+  // ---TO SCROLL TO SECTION 1 POSSITION ALSO WE NEED TO ADD THE PIXELS THE CURRENT DOCUMENT HAS BEEN SCROLLED FROM THE UPPER LEFT CORNER OF THE WINDOW (CURRENT POSITION + CURRENT SCROLL)
+  // window.scrollTo(
+  //   s1coords.left + window.pageXOffset,
+  //   s1coords.top + window.pageYOffset
+  // );
+  // ---TO SMOOTH SCROLLING
+  // window.scrollTo({
+  //   left: s1coords.left + window.pageXOffset,
+  //   top: s1coords.top + window.pageYOffset,
+  //   behavior: 'smooth',
+  // });
+  // ---MODERN WAY OF SMOOTH SCROLLING
+  section1.scrollIntoView({ behavior: 'smooth' });
+});
+*/
+
+// CHAPTER:TYPES OF EVENTS AND EVENT HANDLERS
+/* 
+const h1 = document.querySelector('h1');
+
+// ---MODERN WAY - WE CAN ALSO CAN ADD MULTIPLE EVENT LISTENERS TO THE SAME EVENT
+h1.addEventListener('mouseenter', e =>
+  console.log('addEventListener: Great! You are reading the heading.', e.target)
+);
+
+// ---OLD SCHOOL
+h1.onmouseenter = function (e) {
+  console.log(
+    'addEventListener: Great! You are reading the heading.',
+    e.target
+  );
+};
+
+// ---WE CAN REMOVE addEventListener
+
+// ---PATTERN 1
+const alertH1 = function (e) {
+  alert('addEventListener: Great! You are reading the heading.');
+  h1.removeEventListener('mouseenter', alertH1);
+};
+
+h1.addEventListener('mouseenter', alertH1);
+
+// ---PATTERN 2
+setTimeout(() => h1.removeEventListener('mouseenter', alertH1), 5000);
+
+// ---ANOTHER OLD SCHOOL WAY
+// <h1 onclick="alert('Old School Rocks')">
+ */
